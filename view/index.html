@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title></title>
+  <link rel="stylesheet" href="assets/css.css">
+</head>
+
+<body>
+  <div class="main" id='main'>
+    <div class="header" id='devBox'>
+      <div class="headerItem">router: 1</div>
+      <div class="headerItem" id='maxRouterNumber'></div>
+      <div class="headerItem">version: 1</div>
+      <div class="headerBtn" id='cancelBtn'>取消调试</div>
+    </div>
+    <div class="app">
+      <div class="appView" id='appView'>
+      </div>
+    </div>
+
+  </div>
+  <script src="assets/native.js"></script>
+  <script>
+    const main = (url, maxRouterNumber) => {
+      document.getElementById('maxRouterNumber').innerHTML = `maxRouterLimit: ${maxRouterNumber}`
+      const prefix = document.getElementById('prefix')
+      const main = document.getElementById('main')
+      const app = document.getElementById('appView')
+      const appHeight = 667
+      const appWidth = 375
+      app.style.width = `${appWidth}px`
+      app.style.height = `${appHeight}px`
+      const rect = app.getBoundingClientRect()
+      nativeEvent.sent({ name: 'startDev', data: { x: parseInt(rect.x), y: parseInt(rect.y), width: parseInt(rect.width), height: parseInt(rect.height) } })
+    }
+    cancelBtn.addEventListener('click', () => {
+      nativeEvent.sent(
+        { name: 'endToStart', data: null },
+        (res) => { },
+        (err) => { }
+      )
+    })
+    // 禁止刷新
+    window.onkeydown = (e) => {
+      const ev = window.event || e
+      const code = ev.keyCode || ev.ctrlKey
+      if (code === 82 && (ev.metaKey || ev.ctrlKey)){
+        return false
+      }
+    }
+  </script>
+</body>
+
+</html>

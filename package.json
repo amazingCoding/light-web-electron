@@ -1,0 +1,15 @@
+{
+  "name": "native-dev",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "electron": "^9.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "electron --inspect=5858 ."
+  },
+  "author": "",
+  "license": "ISC"
+}

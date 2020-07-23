@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      user-select: none;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .header {
+      width: 100%;
+      height: 64px;
+      background-color: #fff;
+    }
+
+    .statusBar {
+      width: 100%;
+      height: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 12px;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .navBar {
+      width: 100%;
+      height: 64px;
+      padding-top: 20px;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .navBarTitle {
+      text-align: center;
+      /* background-color: #fff; */
+      /* 65 + 12 + 12 */
+      /* 44 + 10  */
+      padding: 0 90px;
+      font-size: 18px;
+      box-sizing: border-box;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .thinner-border:before {
+      content: '';
+      border-radius: 28px;
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      border: 1px solid rgba(50, 50, 50, 0.3);
+      transform-origin: 0 0;
+      transform: scale(0.5, 0.5);
+      box-sizing: border-box;
+      z-index: 0;
+    }
+
+    .navBarBtn {
+      width: 44px;
+      height: 44px;
+      background-size: 17px 17px;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: absolute;
+      left: 0;
+      top: 20px;
+      display: none;
+    }
+
+    .navBarBtn:active {
+      opacity: 0.5;
+    }
+
+    .navBarBtnW {
+      background-image: url(./assets/back_w@3x.png);
+    }
+
+    .navBarBtnB {
+      background-image: url(./assets/back@3x.png);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="main">
+    <div class="header" id='header'>
+      <div class="navBar" id='navBar'>
+        <div id='backBtn' class="navBarBtn"></div>
+        <div class="navBarTitle" id='navBarTitle'></div>
+      </div>
+      <div class="statusBar" id='time'></div>
+    </div>
+  </div>
+  <script>
+    const time = document.getElementById('time')
+    const backBtn = document.getElementById('backBtn')
+    const navBar = document.getElementById('navBar')
+    const header = document.getElementById('header')
+    const navBarTitle = document.getElementById('navBarTitle')
+    // help
+    const changeTime = () => {
+      const date = new Date()
+      let h = date.getHours()
+      let m = date.getMinutes()
+      h = h < 10 ? `0` + h : h
+      m = m < 10 ? `0` + m : m
+      time.innerHTML = `${h}:${m}`
+    }
+    const checkColorIsDeep = (str) => {
+      if (str.length < 6) return false
+      if (str.indexOf('#') !== 0) return false
+      const rgb = []
+      for (let index = 1; index < str.length; index += 2) {
+        const hex = str[index] + str[index + 1]
+        const color = parseInt(hex, 16)
+        if (isNaN(color)) { rgb.push(0) }
+        else { rgb.push(color) }
+      }
+      console.log(rgb)
+      if (rgb[0] * 0.299 + rgb[1] * 0.578 + rgb[2] * 0.114 >= 192) {
+        return false
+      }
+      return true
+    }
+    // 时间改变
+    changeTime()
+    setInterval(() => { changeTime() }, 1000 * 30)
+    // 点击事件
+    backBtn.addEventListener('clikc', () => { })
+
+    const init = (config, needBack = false) => {
+      time.style.color = config.statusStyle === 0 ? "#fff" : "#000"
+      if (config.isHideNav) {
+        navBar.style.display = 'none'
+        header.style.backgroundColor = 'transparent'
+        return
+      }
+      navBar.style.display = 'flex'
+      header.style.backgroundColor = config.navBackgroundColor
+      navBarTitle.innerHTML = config.title
+      navBarTitle.style.color = config.titleColor
+
+      // 判断背景色从而选择 返回按钮的颜色
+      if (needBack) {
+        backBtn.className = checkColorIsDeep(config.navBackgroundColor) ? `navBarBtn navBarBtnW` : `navBarBtn navBarBtnB`
+        backBtn.style.display = 'block'
+      }
+      else { backBtn.style.display = 'none' }
+    }
+    // init(null, true)
+  </script>
+</body>
+
+</html>

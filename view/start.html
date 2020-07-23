@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title></title>
+  <link rel="stylesheet" href="assets/css.css">
+</head>
+
+<body>
+  <div class="prefix" id='prefix'>
+    <div class="prefixItem">
+      <div class="prefixItemText">URL</div>
+      <input class="prefixInput" type="text" value="http://localhost:8888/" id='inputURL' />
+    </div>
+    <div class="prefixItem">
+      <div class="prefixItemText">maxRouter</div>
+      <input class="prefixInput" type="text" value="3" id='inputRouter' />
+    </div>
+    <div class="prefixItem">
+      <div class="headerBtn" id='okBtn'>开始调试</div>
+    </div>
+  </div>
+  <script src="assets/native.js"></script>
+  <script>
+    const main = () => {
+      const inputURL = document.getElementById('inputURL')
+      const inputRouter = document.getElementById('inputRouter')
+      const okBtn = document.getElementById('okBtn')
+      okBtn.addEventListener('click', () => {
+        const url = inputURL.value
+        const maxRouterNumber = Number(inputRouter.value)
+        if (url.length > 0 && inputRouter.value.length > 0 && !isNaN(maxRouterNumber)) {
+          nativeEvent.sent(
+            { name: 'createMainWindow', data: { url, maxRouterNumber } },
+            (res) => {
+              main(maxRouterNumber)
+            },
+            (err) => { }
+          )
+        }
+      })
+    }
+    main()
+  </script>
+</body>
+
+</html>

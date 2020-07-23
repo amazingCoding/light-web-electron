@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      user-select: none;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .capsuleBtnBox {
+      position: absolute;
+      width: 65px;
+      height: 28px;
+      right: 0px;
+      top: 0px;
+      background-color: rgba(255, 255, 255, 0.5);
+      box-sizing: border-box;
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .capsuleBtn {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+      background-size: 16px 14px;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .capsuleBtn:active {
+      opacity: 0.5;
+    }
+
+    .capsuleBtnBoxLine {
+      width: 1px;
+      margin-left: 0.25px;
+      transform-origin: 0 0;
+      transform: scale(0.5, 1);
+      box-sizing: border-box;
+      background-color: rgba(50, 50, 50, 0.3);
+    }
+
+    .thinner-border:before {
+      content: '';
+      border-radius: 28px;
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      border: 1px solid rgba(50, 50, 50, 0.3);
+      transform-origin: 0 0;
+      transform: scale(0.5, 0.5);
+      box-sizing: border-box;
+      z-index: 0;
+    }
+
+    #capsuleBtnAbout {
+      background-image: url(./assets/more@3x.png);
+    }
+
+    #capsuleBtnClose {
+      background-image: url(./assets/circular@3x.png);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="capsuleBtnBox thinner-border">
+    <div class="capsuleBtn" id='capsuleBtnAbout'></div>
+    <div class="capsuleBtnBoxLine"></div>
+    <div class="capsuleBtn" id='capsuleBtnClose'></div>
+  </div>
+  <script>
+    // 点击事件
+    document.getElementById('capsuleBtnClose').addEventListener('clikc', () => { })
+    document.getElementById('capsuleBtnAbout').addEventListener('clikc', () => { })
+  </script>
+</body>
+
+</html>
