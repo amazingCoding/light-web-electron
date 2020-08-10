@@ -1,6 +1,7 @@
 const { app, ipcMain, screen, globalShortcut, Menu } = require('electron')
+const { nativeTheme } = require('electron')
 const process = require('process')
-const windows = require('./helper/window')
+const windows = require('./model/windows')
 // 顶部菜单
 const menuTemplate = []
 if (process.platform === 'darwin') {
@@ -13,6 +14,20 @@ if (process.platform === 'darwin') {
         click() {
           app.quit();
         }
+      },
+      {
+        label: "Edit",
+        submenu: [
+          { role: 'undo' },
+          { role: 'redo' },
+          { type: 'separator' },
+          { role: 'cut' },
+          { role: 'copy' },
+          { role: 'paste' },
+          { role: 'pasteandmatchstyle' },
+          { role: 'delete' },
+          { role: 'selectall' }
+        ]
       }
     ]
   })
@@ -21,10 +36,14 @@ const appMenu = Menu.buildFromTemplate(menuTemplate)
 Menu.setApplicationMenu(appMenu)
 
 app.on('ready', async () => {
-  windows.init(screen)
-  await windows.createStartWindow()
+  nativeTheme.themeSource = 'dark'
+  await windows.init(screen)
   globalShortcut.register('CommandOrControl+R', () => {
     // 只刷新当前 调试页面
+    if (windows.mainWin) {
+      const currentPage = windows.router[windows.router.length - 1]
+      currentPage.reload()
+    }
   })
 })
 // 当全部窗口关闭时退出。
@@ -37,7 +56,7 @@ ipcMain.on('webEvent', async (event, value) => {
   console.log('====END====')
   if (windows[name]) windows[name](data)
 })
-
+//接受开发 web 端事件
 ipcMain.on('nativeEvent', async (event, value) => {
   const { webCode, name, data } = JSON.parse(value)
   const id = data.id
@@ -45,10 +64,4 @@ ipcMain.on('nativeEvent', async (event, value) => {
   console.log(value)
   console.log('====END====')
   windows.nativeCoreFunc(webCode, id, name, data.data)
-  // try {
-  //   const { data, err } = res
-  //   // if (windows.mainWin) windows.mainWin.webContents.send('nativeEvent', { id, res: { data: data ? JSON.stringify(data) : '', err } })
-  // } catch (error) {
-  //   console.log(error)
-  // }
 })

@@ -10,16 +10,19 @@
 
 <body>
   <div class="prefix" id='prefix'>
+    <div class="prefixItemHeader">Light Web</div>
+    <div class="prefixItemTips">Root 需要以 index 或者 index.html 结尾</div>
     <div class="prefixItem">
-      <div class="prefixItemText">URL</div>
-      <input class="prefixInput" type="text" value="http://localhost:8888/" id='inputURL' />
+      <div class="prefixItemText">Root</div>
+      <input class="prefixInput" type="text" value="http://localhost:8888/index" id='inputURL' />
+      <!-- <input class="prefixInput" type="text" value="file:///Users/songhang/webApp/web_local/index.html" id='inputURL' /> -->
     </div>
     <div class="prefixItem">
-      <div class="prefixItemText">maxRouter</div>
-      <input class="prefixInput" type="text" value="3" id='inputRouter' />
+      <div class="prefixItemText">max-router</div>
+      <input class="prefixInput" type="text" value="5" id='inputRouter' />
     </div>
-    <div class="prefixItem">
-      <div class="headerBtn" id='okBtn'>开始调试</div>
+    <div class="prefixItem" style="margin-top: 20px;">
+      <button class="headerBtn" id='okBtn'>开始调试</button>
     </div>
   </div>
   <script src="assets/native.js"></script>
@@ -32,13 +35,12 @@
         const url = inputURL.value
         const maxRouterNumber = Number(inputRouter.value)
         if (url.length > 0 && inputRouter.value.length > 0 && !isNaN(maxRouterNumber)) {
-          nativeEvent.sent(
-            { name: 'createMainWindow', data: { url, maxRouterNumber } },
-            (res) => {
-              main(maxRouterNumber)
-            },
-            (err) => { }
-          )
+          if (url.endsWith('index') || url.endsWith('index.html')) {
+            nativeEvent.sent(
+              { name: 'createMainWindow', data: { url, maxRouterNumber } },
+              (res) => { main(maxRouterNumber) }
+            )
+          }
         }
       })
     }

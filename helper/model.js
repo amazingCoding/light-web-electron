@@ -1,4 +1,9 @@
 const { isHexColor } = require('./index')
+const Theme = {
+  'light': 0,
+  'dark': 1,
+  'auto': 2,
+}
 class ViewConfig {
   isHideNav = 0
   statusStyle = 0
@@ -8,6 +13,7 @@ class ViewConfig {
   backgroundColor = '#f1f1f1'
   bounces = 0
   showCapsule = 1
+  theme = Theme.auto
   constructor(obj) {
     for (const key in obj) { this.checkUndefValue(obj, key) }
   }
@@ -22,10 +28,13 @@ class ViewConfig {
     for (const key in obj) {
       if (obj.hasOwnProperty(key) && this.hasOwnProperty(key)) {
         if (obj[key] !== this[key]) {
-          if (typeof this[key] === 'string' && obj[key] === '') return
-          if (isHexColor(this[key]) && !isHexColor(obj[key])) return
-          this[key] = obj[key]
-          arr.push(key)
+          let flag = true
+          if (typeof this[key] === 'string' && obj[key] === '') flag = false
+          if (isHexColor(this[key]) && !isHexColor(obj[key])) flag = false
+          if (flag) {
+            this[key] = obj[key]
+            arr.push(key)
+          }
         }
       }
     }
@@ -34,4 +43,5 @@ class ViewConfig {
 }
 module.exports = {
   ViewConfig,
+  Theme
 }

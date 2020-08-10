@@ -9,23 +9,35 @@
 </head>
 
 <body>
-  <div class="main" id='main'>
-    <div class="header" id='devBox'>
-      <div class="headerItem">router: 1</div>
-      <div class="headerItem" id='maxRouterNumber'></div>
-      <div class="headerItem">version: 1</div>
-      <div class="headerBtn" id='cancelBtn'>取消调试</div>
-    </div>
-    <div class="app">
-      <div class="appView" id='appView'>
+  <div class="appMain">
+    <div class="main" id='main'>
+      <div class="header" id='devBox'>
+        <div class="headerItem" id='maxRouterNumber'>max router: </div>
+        <div class="headerItem" id='routerName'>current name: </div>
+        <div id='cancelBtn'>cancel</div>
+      </div>
+      <div class="header">
+        <div class='headerBtnNull'></div>
+        <div class='headerBtn' id='backBtn' style="margin:0 20px 0 0;">back</div>
+        <div class='headerBtn' id='active' style="margin:0 20px 0 0;">active</div>
+        <div class='headerBtn' id='background' style="margin:0 20px 0 0;width:160px;">background</div>
+        <input class="switch" type="checkbox" id='changThemeBtn' />
+      </div>
+      <div id='routerUI'></div>
+      <div class="app">
+        <div class="appView" id='appView' style="background-color: fff;">
+          <div class="dot" style="background-color: rgb(241, 241, 241);"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
       </div>
     </div>
-
+    <div class="dev">devtool loading</div>
   </div>
   <script src="assets/native.js"></script>
   <script>
     const main = (url, maxRouterNumber) => {
-      document.getElementById('maxRouterNumber').innerHTML = `maxRouterLimit: ${maxRouterNumber}`
+      document.getElementById('maxRouterNumber').innerHTML = `max router: ${maxRouterNumber}`
       const prefix = document.getElementById('prefix')
       const main = document.getElementById('main')
       const app = document.getElementById('appView')
@@ -34,11 +46,51 @@
       app.style.width = `${appWidth}px`
       app.style.height = `${appHeight}px`
       const rect = app.getBoundingClientRect()
-      nativeEvent.sent({ name: 'startDev', data: { x: parseInt(rect.x), y: parseInt(rect.y), width: parseInt(rect.width), height: parseInt(rect.height) } })
+      let routerArrStr = ''
+      for (let index = 0; index < maxRouterNumber; index++) {
+        if (index === 0) {
+          routerArrStr += `<div class='routerUIItem routerUIItemActive'></div>`
+        }
+        else {
+          routerArrStr += `<div class='routerUIItem'></div>`
+        }
+      }
+      document.getElementById('routerUI').innerHTML = routerArrStr
+      try {
+        nativeEvent.sent({ name: 'startPage', data: { x: parseInt(rect.x) + 1, y: parseInt(rect.y), width: parseInt(rect.width), height: parseInt(rect.height) } })
+      } catch (error) {
+
+      }
     }
+    const changThemeBtn = document.getElementById('changThemeBtn')
+    const cancelBtn = document.getElementById('cancelBtn')
+    document.getElementById('backBtn').addEventListener('click', () => {
+      nativeEvent.sent({ name: 'removePageByBackBtn', data: {} })
+    })
+    document.getElementById('background').addEventListener('click', () => {
+      nativeEvent.sent(
+        { name: 'changeAppStaus', data: { status: 0 } },
+        (res) => { },
+        (err) => { }
+      )
+    })
+    document.getElementById('active').addEventListener('click', () => {
+      nativeEvent.sent(
+        { name: 'changeAppStaus', data: { status: 1 } },
+        (res) => { },
+        (err) => { }
+      )
+    })
     cancelBtn.addEventListener('click', () => {
       nativeEvent.sent(
         { name: 'endToStart', data: null },
+        (res) => { },
+        (err) => { }
+      )
+    })
+    changThemeBtn.addEventListener('change', () => {
+      nativeEvent.sent(
+        { name: 'changeTheme', data: null },
         (res) => { },
         (err) => { }
       )
@@ -47,10 +99,33 @@
     window.onkeydown = (e) => {
       const ev = window.event || e
       const code = ev.keyCode || ev.ctrlKey
-      if (code === 82 && (ev.metaKey || ev.ctrlKey)){
+      if (code === 82 && (ev.metaKey || ev.ctrlKey)) {
         return false
       }
     }
+    const changePos = (index, name) => {
+      document.getElementById('routerName').innerHTML = `${name}`
+      const arr = document.getElementsByClassName('routerUIItem')
+      for (let i = 0; i < arr.length; i++) {
+        const element = arr[i];
+        if (i <= index) {
+          element.className = 'routerUIItem routerUIItemActive'
+        }
+        else {
+          element.className = 'routerUIItem'
+        }
+      }
+    }
+    let index = 0
+    const dot = document.getElementsByClassName('dot')
+    const max = dot.length
+    const time = 300
+    const changeStyle = () => {
+      dot[index].style.backgroundColor = 'rgb(200, 200, 200)'
+      index = index == max - 1 ? 0 : index + 1
+      dot[index].style.backgroundColor = 'rgb(241, 241, 241)'
+    }
+    setInterval(changeStyle, time)
   </script>
 </body>
 

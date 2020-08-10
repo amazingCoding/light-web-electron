@@ -111,6 +111,7 @@
       <div class="statusBar" id='time'></div>
     </div>
   </div>
+  <script src="./assets/native.js"></script>
   <script>
     const time = document.getElementById('time')
     const backBtn = document.getElementById('backBtn')
@@ -146,7 +147,9 @@
     changeTime()
     setInterval(() => { changeTime() }, 1000 * 30)
     // 点击事件
-    backBtn.addEventListener('clikc', () => { })
+    backBtn.addEventListener('click', () => {
+      nativeEvent.sent({ name: 'removePageByBackBtn', data: {} })
+    })
 
     const init = (config, needBack = false) => {
       time.style.color = config.statusStyle === 0 ? "#fff" : "#000"

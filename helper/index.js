@@ -1,10 +1,15 @@
 const { BrowserWindow, BrowserView } = require('electron')
 const path = require('path')
+const { setTimeout } = require('timers')
 
-const createWindow = async (width, height, name = 'start') => {
-  let win = new BrowserWindow({
+const createWindow = async (width, height, name = 'start', frame = true, parent = null, hasShadow = true, transparent = false) => {
+  const config = {
     width,
     height,
+    frame,
+    hasShadow,
+    transparent,
+    show: false,
     minimizable: false,
     maximizable: false,
     resizable: false,
@@ -13,36 +18,45 @@ const createWindow = async (width, height, name = 'start') => {
       webSecurity: false,
       allowRunningInsecureContent: false,
     }
-  })
+  }
+  if (parent) config['parent'] = parent
+  let win = new BrowserWindow(config)
   await win.loadFile(path.join(__dirname, `../view/${name}.html`))
+  win.show()
   return win
 }
-
 const addDevWindow = async (mainWin, win, rect) => {
-  const devtools = new BrowserView({
-    transparent: true
-  })
-  devtools.webContents.transparent = true
-  devtools.webContents.backgroundColor = "#000000"
-  mainWin.addBrowserView(devtools)
+  const devtools = new BrowserView({})
+  if (mainWin) mainWin.addBrowserView(devtools)
   devtools.setBounds(rect)
   win.webContents.setDevToolsWebContents(devtools.webContents)
   win.webContents.openDevTools({ mode: 'detach' })
-  return devtools
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(devtools)
+    }, 300);
+  })
+  //return devtools
 }
 const addAppWindow = async (win, url, rect) => {
-  let appView = new BrowserView({
+  const appView = new BrowserView({
+    transparent: true,
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false,
+      blinkFeatures: 'Touch',
       allowRunningInsecureContent: false
     }
   })
-  win.addBrowserView(appView)
+  if (win) win.addBrowserView(appView)
   appView.setBounds(rect)
   try {
     if (url) {
-      await appView.webContents.loadFile(path.join(__dirname, `../view/${url}.html`))
+      try {
+        await appView.webContents.loadFile(path.join(__dirname, `../view/${url}.html`))
+      }
+      catch (error) {
+      }
     }
   } catch (error) {
     console.log(error);
@@ -60,10 +74,54 @@ const checkHexColor = (str) => {
   if (isHexColor(str)) return str
   return '#ffffff'
 }
+const vibrate = (isLong, views) => {
+  let times = isLong ? 8 : 2
+  const rects = []
+  for (let index = 0; index < views.length; index++) {
+    rects.push(views[index].getBounds())
+  }
+  const animate = (time, width) => {
+    const startTime = new Date().getTime()
+    const move = () => {
+      const nowTime = new Date().getTime()
+      const diff = nowTime - startTime
+      const fraction = diff / time
+      if (fraction < 1) {
+        for (let index = 0; index < rects.length; index++) {
+          const rect = rects[index]
+          const view = views[index]
+          let x = rect.x
+          if (fraction < 0.25) { x += Number(parseInt((fraction) * width)) }
+          else if (fraction >= 0.25 && fraction < 0.5) { x += Number(parseInt((width / 2 - (fraction - 0.5) * width))) }
+          else if (fraction >= 0.5 && fraction < 0.75) { x -= Number(parseInt((fraction) * width)) }
+          else if (fraction >= 0.75) { x -= Number(parseInt((width / 2 - (fraction - 0.5) * width))) }
+          const newRect = { ...rect }
+          newRect.x = x
+          view.setBounds(newRect)
+        }
+        setTimeout(move, Math.min(25, time - diff))
+      }
+      else {
+        if (times > 0) {
+          times -= 1
+          animate(time, width)
+        }
+        else {
+          for (let index = 0; index < rects.length; index++) {
+            views[index].setBounds(rects[index])
+          }
+        }
+      }
+    }
+    move()
+  }
+  animate(100, times)
+}
 module.exports = {
   createWindow,
   addDevWindow,
   addAppWindow,
   checkHexColor,
-  isHexColor
+  isHexColor,
+  vibrate
 }

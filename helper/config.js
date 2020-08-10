@@ -7,15 +7,24 @@ const BridgeMethods = {
   setClipboard: prefix + 'set_clipboard',
   getClipboard: prefix + 'get_clipboard',
 }
+const BridgeEvents = {
+  'active': prefix + 'appActive',
+  'backGround': prefix + 'appBackGround',
+  'show': prefix + 'viewShow',
+  'hide': prefix + 'viewHide',
+  'sceneMode': prefix + 'sceneMode'
+}
 const RouterActions = {
   'push': 0,
   'pop': 1,
   'replace': 2,
   'setPopExtra': 3,
-  'close': 4,
-  'restart': 5,
+  'restart': 4,
 }
+const ZERORECT = { x: 0, y: 0, width: 0, height: 0 }
 module.exports = {
   BridgeMethods,
-  RouterActions
+  BridgeEvents,
+  RouterActions,
+  ZERORECT
 }
