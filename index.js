@@ -36,7 +36,7 @@ const appMenu = Menu.buildFromTemplate(menuTemplate)
 Menu.setApplicationMenu(appMenu)
 
 app.on('ready', async () => {
-  nativeTheme.themeSource = 'dark'
+  // nativeTheme.themeSource = 'dark'
   await windows.init(screen)
   globalShortcut.register('CommandOrControl+R', () => {
     // 只刷新当前 调试页面

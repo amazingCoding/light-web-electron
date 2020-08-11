@@ -299,6 +299,5 @@ class Windows {
     this.mainWin.addBrowserView(this.capsulteView)
     this.capsulteView.setBounds(this.capsulteView.myRect)
   }
-
 }
 module.exports = new Windows()

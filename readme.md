@@ -1,6 +1,8 @@
 ## light-web-electronjs
 基于 electronjs 对于 [light-web](https://github.com/amazingCoding/light-web-core) 跨端 webview 框架的开发支持。
 
+![avatar](./img/2.png)
+
 ![avatar](./img/1.png)
 ## 使用
 ```
