@@ -70,8 +70,8 @@ class Windows {
   // webEvent startDev in index.html 创建第一个页面 
   async startPage(rect) {
     this.rect = rect
-    // 创建一个 BrowserView - 虚拟顶部
-    const myRect = { width: 65, height: 28, x: rect.x + rect.width - 77, y: rect.y + 28 }
+    // 创建一个 BrowserView - 虚拟顶部 x = 91 + 12 = 103   / y = y + 20 + (44- 32) / 2
+    const myRect = { width: 91, height: 33, x: rect.x + rect.width - 103, y: rect.y + 26 }
     this.capsulteView = await addAppWindow(null, 'capsulteBtn', myRect)
     this.capsulteView.myRect = myRect
     // 创建 header (先不要加入 win 上) & page BrowserView
