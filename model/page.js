@@ -89,7 +89,7 @@ class Page {
       })
       this.isInit = true
     }
-    this.show(app.mainWin, null)
+    // this.show(app.mainWin, null)
   }
   changeViewInPage(app, { data, id }) {
     const themeConfig = this.viewConfig.theme
