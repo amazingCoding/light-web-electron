@@ -9,7 +9,6 @@ class Page {
   appView = null
   devView = null
 
-
   globalName = null
   viewConfig = null
   preRouterExtra = null
@@ -56,7 +55,7 @@ class Page {
       webWidth: app.rect.width,
       webHeight: appRect.height,
       statusBarHeight: 20,
-      capsule: { width: 65, height: 28, x: app.rect.width - 12 - 65, y: 28 },
+      capsule: { width: 91, height: 33, x: app.rect.width - 12 - 91, y: 26 },
     }
     const routerInfo = {
       maxRouters: app.maxRouterNumber,
@@ -69,9 +68,10 @@ class Page {
       data: {
         appInfo,
         routerInfo,
-        extra,
+        extra: extra ? JSON.stringify(extra) : null,
         currentTheme: this.currentTheme
-      }, state: 0
+      },
+      state: 0
     }
     this.callBack(id, res, null)
     // 刷新当前开发页面的时候reload，不再执行这一步
@@ -150,7 +150,7 @@ class Page {
     this.appView.setBounds(this.appViewRect)
     this.isShow = true
     // show show 通知
-    const res = { data: extra, state: 0 }
+    const res = { data: extra ? JSON.stringify(extra) : null, state: 0 }
     this.pub(BridgeEvents.show, res)
   }
   destroy(mainWin) {
@@ -198,7 +198,7 @@ class Page {
     this.appView.webContents.executeJavaScript(`window['${this.globalName}'].exec(${id},${res},${err})`)
   }
   pub(name, res) {
-    this.appView.webContents.executeJavaScript(`window['${this.globalName}'].pub('${name}',${JSON.stringify(res)},null)`)
+    this.appView.webContents.executeJavaScript(`window['${this.globalName}'].pub('${name}',${JSON.stringify(res)})`)
   }
   changeTheme(theme) {
     if (this.viewConfig.theme !== Theme.auto) return
