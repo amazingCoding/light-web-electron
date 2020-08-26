@@ -61,14 +61,17 @@ class Page {
       maxRouters: app.maxRouterNumber,
       currentPos: this.currentRouter,
     }
-    const extra = this.preRouterExtra ? this.preRouterExtra : null
+    let extra = this.preRouterExtra ? this.preRouterExtra : null
+    if (extra) {
+      extra = typeof (extra) === 'string' ? extra : JSON.stringify(extra)
+    }
     // 用完就不再需要了
     this.preRouterExtra = null
     const res = {
       data: {
         appInfo,
         routerInfo,
-        extra: extra ? JSON.stringify(extra) : null,
+        extra,
         currentTheme: this.currentTheme
       },
       state: 0
@@ -89,7 +92,7 @@ class Page {
       })
       this.isInit = true
     }
-    // this.show(app.mainWin, null)
+    this.show(app.mainWin, null, false)
   }
   changeViewInPage(app, { data, id }) {
     const themeConfig = this.viewConfig.theme
@@ -143,15 +146,20 @@ class Page {
     const res = { data: null, state: 0 }
     this.pub(BridgeEvents.hide, res)
   }
-  show(win, extra) {
+  show(win, extra, needPub = true) {
     win.addBrowserView(this.appView)
     win.addBrowserView(this.devView)
     this.devView.setBounds(this.devViewRect)
     this.appView.setBounds(this.appViewRect)
     this.isShow = true
     // show show 通知
-    const res = { data: extra ? JSON.stringify(extra) : null, state: 0 }
-    this.pub(BridgeEvents.show, res)
+    if (needPub) {
+      let data = extra ? extra : null
+      if(data) data = typeof (data) === 'string' ? data : JSON.stringify(data)
+      const res = { data, state: 0 }
+      this.pub(BridgeEvents.show, res)
+    }
+
   }
   destroy(mainWin) {
     if (this.devView) {
