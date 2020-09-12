@@ -66,7 +66,7 @@ class Page {
       extra = typeof (extra) === 'string' ? extra : JSON.stringify(extra)
     }
     // 用完就不再需要了
-    this.preRouterExtra = null
+    // this.preRouterExtra = null
     const res = {
       data: {
         appInfo,
